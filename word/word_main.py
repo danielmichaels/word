@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from word.helpers import json_definition
+from output import print_definition
 
 
 class Word:
@@ -24,7 +24,7 @@ class Word:
         entries = '/entries/en/'  # hardcoded for english currently
         url = self.base_url + entries + word.lower()
         json_ = self.call_api(url)
-        json_definition(json_)
+        print_definition(json_)
 
     def thesaurus(self):
         pass
@@ -41,7 +41,10 @@ class Word:
 
 
 w = Word()
-# w.definition('lexicon')
-# w.definition('wordsmith')
-# w.definition('logophile')
+w.definition('lexicon')
+w.definition('wordsmith')
+w.definition('logophile')
 w.definition('ace')
+w.definition('run')
+w.definition('and')
+w.definition('gentrification')
