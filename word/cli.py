@@ -1,4 +1,8 @@
+from json import JSONDecodeError
+
 import click
+
+from word_main import Word
 
 
 @click.command()
@@ -10,14 +14,19 @@ import click
 @click.option('--antonyms', '-a', is_flag=True,
               help='Return antonyms for given word.')
 def cli(word, thesaurus, synonyms, antonyms):
-    if thesaurus:
-        click.echo(f'thesaurus {word}')
-    elif synonyms:
-        click.echo(f'synonyms: {word}')
-    elif antonyms:
-        click.echo(f'antonyms: {word}')
-    else:
-        click.echo(f"Here\n\nis the defintion of\n{word}")
+    lookup = Word()
+    try:
+        if thesaurus:
+            lookup.thesaurus(word)
+        elif synonyms:
+            click.echo(f'synonyms: {word}')
+        elif antonyms:
+            click.echo(f'antonyms: {word}')
+        else:
+            lookup.definition(word)
+    except JSONDecodeError as e:
+        print(e)
+        print('word does not exist')
 
 
 if __name__ == '__main__':
