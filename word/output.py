@@ -38,19 +38,23 @@ def definition(json_, caller):
             click.echo(word[0].capitalize())
         etymology(json_)
 
-    except KeyError as e:
+    except KeyError:
         pass
 
 
 def etymology(json_):
+    list_of_origins = []
     try:
         etymologies = item_generator(json_, 'etymologies')
-        click.echo('\nOrigin\'s')
         num = 1
         for etymol in etymologies:
-            click.echo(f"{num}. {etymol[0]}")
-            num += 1
-    except KeyError as e:
+            list_of_origins.append(etymol)
+        if len(list_of_origins) >= 1:
+            click.echo('\nOrigin\'s')
+            for origin in list_of_origins:
+                click.echo(f"{num}. {origin[0]}")
+                num += 1
+    except KeyError:
         pass
 
 
