@@ -1,5 +1,3 @@
-from json import JSONDecodeError
-
 import click
 
 
@@ -56,25 +54,3 @@ def etymology(json_):
         pass
 
 
-def thesaurus(json_, thesaurus_: str):
-    try:
-        thesaurus_words = list()
-        for like_word in json_[thesaurus_]:
-            word = like_word['text'].capitalize()
-            thesaurus_words.append(word)
-        # return concat_list(thesaurus_words)
-        return thesaurus_words
-
-    except KeyError:
-        #  KeyError means that no synonym or antonym exists for word.
-        pass
-    except JSONDecodeError as e:
-        click.echo(e)
-
-
-def concat_list(list_words):
-    if isinstance(list_words, list):
-        if len(list_words) > 0:
-            click.echo(", ".join(x for x in list_words))
-        else:
-            pass
