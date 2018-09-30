@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from output import print_definition
+from output import thesaurus_printer, definition
 
 
 class Word:
@@ -21,13 +21,16 @@ class Word:
         return response.json()
 
     def definition(self, word):
-        entries = '/entries/en/'  # hardcoded for english currently
-        url = self.base_url + entries + word.lower()
+        url = self.base_url + '/entries/en/' + word.lower()
         json_ = self.call_api(url)
-        print_definition(json_)
+        definition(json_, 'definitions')
 
-    def thesaurus(self):
-        pass
+    def thesaurus(self, word):
+        both = '/synonyms;antonyms'
+        url = self.base_url + '/entries/en/' + word.lower() + both
+        json_ = self.call_api(url)
+        thesaurus_printer(json_, 'synonyms')
+        # printer(json_, 'antonyms')
 
     def antonyms(self):
         pass
@@ -41,10 +44,7 @@ class Word:
 
 
 w = Word()
-w.definition('lexicon')
-w.definition('wordsmith')
-w.definition('logophile')
-w.definition('ace')
-w.definition('run')
-w.definition('and')
 w.definition('gentrification')
+w.definition('ace')
+# w.thesaurus('house')
+# w.thesaurus('ace')
