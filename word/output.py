@@ -16,8 +16,8 @@ def item_generator(json_input, lookup_key):
 def thesaurus_generator(json_, key):
     words = list()
     for item in item_generator(json_, key):
-        for xx in item:
-            vals = xx['id']
+        for word in item:
+            vals = word['text']
             words.append(vals)
     splits = ", ".join(x for x in words)
     return splits
