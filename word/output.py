@@ -3,33 +3,56 @@ from json import JSONDecodeError
 import click
 
 
-def print_definition(json_):
-    """Print the definition of searched word to terminal."""
-    word = json_['results'][0]['word']
-    click.echo()
-    click.echo(f"{word}")
-    for i in json_["results"]:
-        for j in i["lexicalEntries"]:
-            click.echo()
-            click.echo(f"({j['lexicalCategory']})")  # noun/ verb etc
-            click.echo()
-            for k in j["entries"]:
-                etymologies = etymology(k)
-                for v in k["senses"]:
-                    click.echo(f"+ {v['definitions'][0].capitalize()}")
+def item_generator(json_input, lookup_key):
+    if isinstance(json_input, dict):
+        for k, v in json_input.items():
+            if k == lookup_key:
+                yield v
+            else:
+                yield from item_generator(v, lookup_key)
+    elif isinstance(json_input, list):
+        for item in json_input:
+            yield from item_generator(item, lookup_key)
 
-                if etymologies:
-                    click.echo("\nOrigin\n")
-                    click.echo(etymologies)
+
+def thesaurus_generator(json_, key):
+    words = list()
+    for item in item_generator(json_, key):
+        for xx in item:
+            vals = xx['id']
+            words.append(vals)
+    splits = ", ".join(x for x in words)
+    return splits
+
+
+def thesaurus_printer(json_, caller=None):
+    try:
+        t = thesaurus_generator(json_, caller)
+        click.echo(t)
+    except KeyError:
+        pass
+
+
+def definition(json_, caller):
+    try:
+        words = item_generator(json_, caller)
+        for word in words:
+            click.echo(word[0].capitalize())
+        etymology(json_)
+
+    except KeyError as e:
+        pass
 
 
 def etymology(json_):
     try:
-        for origin in json_['etymologies']:
-            return origin
-        else:
-            return None
-    except KeyError:
+        etymologies = item_generator(json_, 'etymologies')
+        click.echo('\nOrigin\'s')
+        num = 1
+        for etymol in etymologies:
+            click.echo(f"{num}. {etymol[0]}")
+            num += 1
+    except KeyError as e:
         pass
 
 
@@ -39,29 +62,19 @@ def thesaurus(json_, thesaurus_: str):
         for like_word in json_[thesaurus_]:
             word = like_word['text'].capitalize()
             thesaurus_words.append(word)
-        return print_lists(thesaurus_words)
+        # return concat_list(thesaurus_words)
+        return thesaurus_words
 
-    except KeyError as e:
-        click.echo(e)
+    except KeyError:
+        #  KeyError means that no synonym or antonym exists for word.
+        pass
     except JSONDecodeError as e:
         click.echo(e)
 
 
-def print_lists(list_words):
+def concat_list(list_words):
     if isinstance(list_words, list):
-        click.echo(", ".join(x for x in list_words))
-
-
-def print_thesaurus(json_):
-    word = json_['results'][0]['word']
-    click.echo()
-    click.echo(word)
-    for i in json_["results"]:
-        for j in i["lexicalEntries"]:
-            click.echo()
-            click.echo(f"({j['lexicalCategory']})")  # noun/ verb etc
-            click.echo()
-            for k in j["entries"]:
-                for v in k["senses"]:
-                    thesaurus(v, 'synonyms')
-                    thesaurus(v, 'antonyms')
+        if len(list_words) > 0:
+            click.echo(", ".join(x for x in list_words))
+        else:
+            pass
