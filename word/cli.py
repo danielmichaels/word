@@ -19,14 +19,14 @@ def cli(word, thesaurus, synonyms, antonyms):
         if thesaurus:
             lookup.thesaurus(word)
         elif synonyms:
-            click.echo(f'synonyms: {word}')
+            lookup.synonyms(word)
         elif antonyms:
-            click.echo(f'antonyms: {word}')
+            lookup.antonyms(word)
         else:
             lookup.definition(word)
-    except JSONDecodeError as e:
-        print(e)
-        print('word does not exist')
+    except JSONDecodeError:
+        click.echo(f"Word: '{word}' not found!")
+        click.echo("Please check spelling and try again.")
 
 
 if __name__ == '__main__':
