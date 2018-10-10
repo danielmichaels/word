@@ -4,7 +4,7 @@ import os
 import click
 import requests
 
-from exceptions import UnauthorizedError, AuthenticationError, NotFoundError, \
+from exceptions import UnauthorizedError, AuthenticationError, \
     InternalServerError, BadGatewayError, ServiceUnavailableError
 from output import thesaurus_printer, definition
 
@@ -25,7 +25,6 @@ class Word:
         try:
             response = requests.get(url, headers=params)
             if response.status_code != 200:
-                # set the exceptions here
 
                 if response.status_code == 401:
                     raise UnauthorizedError(response.status_code,
@@ -33,9 +32,6 @@ class Word:
                 if response.status_code == 403:
                     raise AuthenticationError(response.status_code,
                                               'Authentication Error')
-                if response.status_code == 404:
-                    raise NotFoundError(response.status_code,
-                                        'Resource Not Found')
                 if response.status_code == 500:
                     raise InternalServerError(response.status_code,
                                               'Internal Server Error')

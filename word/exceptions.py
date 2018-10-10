@@ -14,11 +14,6 @@ class AuthenticationError(OxfordExceptions):
     pass
 
 
-class NotFoundError(OxfordExceptions):
-    # 404
-    pass
-
-
 class InternalServerError(OxfordExceptions):
     # 500
     pass

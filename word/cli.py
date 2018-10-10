@@ -14,6 +14,14 @@ from word_main import Word
 @click.option('--antonyms', '-a', is_flag=True,
               help='Return antonyms for given word.')
 def cli(word, thesaurus, synonyms, antonyms):
+    """
+    Word is a simple dictionary lookup application.
+
+    Example.
+
+    >> word schadenfreude
+
+    """
     lookup = Word()
     try:
         if thesaurus:
