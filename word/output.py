@@ -2,6 +2,7 @@ import click
 
 
 def printer(fn):
+    """A decorator function that outputs default data around the response."""
     def wrapper(*args, **kwargs):
         word = args[0]['results'][0]['word']
         provider = args[0]['metadata']['provider']
@@ -14,6 +15,7 @@ def printer(fn):
 
 
 def item_generator(json_input, lookup_key):
+    """A recursive json generator."""
     if isinstance(json_input, dict):
         for k, v in json_input.items():
             if k == lookup_key:
@@ -26,6 +28,10 @@ def item_generator(json_input, lookup_key):
 
 
 def thesaurus_generator(json_, key):
+    """
+    Called within the Word class and returns all thesaurus entries for the
+    given key.
+    """
     words = list()
     for item in item_generator(json_, key):
         for word in item:
@@ -37,6 +43,7 @@ def thesaurus_generator(json_, key):
 
 @printer
 def thesaurus_printer(json_, lookup_key):
+    """Prints out synonym, antonym or both based on user input."""
     try:
         if lookup_key == 'both':
             syn = thesaurus_generator(json_, 'synonyms')
@@ -58,6 +65,7 @@ def thesaurus_printer(json_, lookup_key):
 
 @printer
 def definition(json_, lookup_key):
+    """Output the word definition."""
     try:
         words = item_generator(json_, lookup_key)
         for word in words:
@@ -69,6 +77,7 @@ def definition(json_, lookup_key):
 
 
 def etymology(json_):
+    """Returns the origin of the given word."""
     list_of_origins = []
     try:
         etymologies = item_generator(json_, 'etymologies')
